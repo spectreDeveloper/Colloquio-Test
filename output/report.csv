@@ -1,0 +1,29 @@
+id_fattura,cliente_id,cliente_id_risolto,ragione_sociale,metodo_match,partita_iva_completa,esito_iva,data_emissione,valuta,importo,tasso_cambio,fonte_tasso,importo_eur,affidabile,motivi_flag
+F0001,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-03-10,EUR,1500.0,1.0,eur_diretto,1500.0,True,possibile doppia registrazione: stesso cliente/data/valuta/importo di F0027
+F0002,C002,C002,Bianchi SpA,id,IT09876543210,valid,2025-03-11,USD,2000.0,0.91642,bce,1832.84,True,
+F0003,C007,C007,Acme Corp,id,,non_applicabile,2025-03-12,USD,5000.0,0.92,contrattuale,4600.0,True,
+F0004,C007,C007,Acme Corp,id,,non_applicabile,2025-06-15,USD,3000.0,0.92,contrattuale,2760.0,True,
+F0005,C003,C003,Müller GmbH,id,DE811234567,error,2025-06-15,EUR,1200.0,1.0,eur_diretto,1200.0,False,VIES non ha risposto (errore/timeout) per questa P.IVA
+F0006,C003,C003,Müller GmbH,id,DE811234567,error,2025-06-14,GBP,800.0,1.1758,bce,940.64,False,VIES non ha risposto (errore/timeout) per questa P.IVA
+F0007,,,,nessuno,,cliente_non_identificato,2025-03-13,EUR,900.0,1.0,eur_diretto,900.0,False,fattura non riconciliata con un cliente in anagrafica; impossibile validare la P.IVA: cliente non identificato
+F0008,C999,,,nessuno,,cliente_non_identificato,2025-03-14,EUR,750.0,1.0,eur_diretto,750.0,False,fattura non riconciliata con un cliente in anagrafica; impossibile validare la P.IVA: cliente non identificato
+F0009,C050,,,nessuno,,cliente_non_identificato,2025-03-15,EUR,400.0,1.0,eur_diretto,400.0,False,fattura non riconciliata con un cliente in anagrafica; impossibile validare la P.IVA: cliente non identificato
+F0010,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-03-17,EUR,1100.0,1.0,eur_diretto,1100.0,True,
+F0011,C013,C013,Océane Média,id,FR123,invalid,2025-01-01,USD,600.0,0.96256,bce,577.54,False,P.IVA non valida secondo VIES
+F0012,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-04-20,USD,1800.0,0.88028,bce,1584.5,True,
+F0013,C006,C006,Dupont SARL,id,FR40303265045,valid,2025-05-05,CHF,2500.0,1.0711,bce,2677.75,True,
+F0014,C014,C014,Schmidt AG,id,DE256789012,valid,2025-05-06,USD,4000.0,0.95,contrattuale,3800.0,True,
+F0015,C014,C014,Schmidt AG,id,DE256789012,valid,2025-05-07,EUR,1000.0,1.0,eur_diretto,1000.0,True,
+F0016,C002,C002,Bianchi SpA,id,IT09876543210,valid,2025-07-14,AED,3500.0,,bce,,False,importo in EUR non calcolabile: errore chiamata Frankfurter: HTTP Error 404: Not Found
+F0017,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-07-15,EUR,-500.0,1.0,eur_diretto,-500.0,False,importo negativo: verificare se e' una nota di credito
+F0018,C008,C008,Verdi & Co,id,IT12345678903,valid,2025-08-11,USD,1300.0,0.86044,bce,1118.57,True,
+F0019,C009,C009,Neri Trading,id,IT99999999999,invalid,2025-08-12,EUR,700.0,1.0,eur_diretto,700.0,False,P.IVA non valida secondo VIES
+F0020,C010,C010,Global Tech Ltd,id,GB123456789,non_supportato,2025-08-13,GBP,950.0,1.1586,bce,1100.67,False,paese del cliente fuori dall'area coperta da VIES
+F0021,C011,C011,Ferrari Spa,id,IT11111111119,valid,2025-09-01,EUR,1600.0,1.0,eur_diretto,1600.0,True,
+F0022,C012,C012,Lopez SL,id,ESB87654321,error,2025-09-02,USD,2100.0,0.85866,bce,1803.19,False,VIES non ha risposto (errore/timeout) per questa P.IVA
+F0023,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-09-03,USD,1234.56,0.85815,bce,1059.44,True,
+F0024,C003,C003,Müller GmbH,id,DE811234567,error,2025-09-05,USD,,,,,False,VIES non ha risposto (errore/timeout) per questa P.IVA; importo in EUR non calcolabile: importo mancante o non interpretabile
+F0025,C003,C003,Müller GmbH,id,DE811234567,error,2025-09-05,,1400.0,,,,False,VIES non ha risposto (errore/timeout) per questa P.IVA; importo in EUR non calcolabile: valuta mancante
+F0026,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-12-25,USD,1900.0,0.84839,bce,1611.94,True,
+F0027,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-03-10,EUR,1500.0,1.0,eur_diretto,1500.0,True,possibile doppia registrazione: stesso cliente/data/valuta/importo di F0001
+F0028,C006,C006,Dupont SARL,id,FR40303265045,valid,2025-06-15,USD,2600.0,0.86866,bce,2258.52,True,

@@ -1,0 +1,36 @@
+{
+  "totale_fatture": 28,
+  "fatture_affidabili": 15,
+  "fatture_da_verificare": 13,
+  "totale_eur_fatture_affidabili": 30003.56,
+  "conteggio_per_esito_iva": {
+    "valid": 15,
+    "error": 5,
+    "cliente_non_identificato": 3,
+    "non_applicabile": 2,
+    "invalid": 2,
+    "non_supportato": 1
+  },
+  "id_fatture_da_verificare": [
+    "F0005",
+    "F0006",
+    "F0007",
+    "F0008",
+    "F0009",
+    "F0011",
+    "F0016",
+    "F0017",
+    "F0019",
+    "F0020",
+    "F0022",
+    "F0024",
+    "F0025"
+  ],
+  "duplicati_anagrafica_rilevati": [
+    {
+      "canonico": "C001",
+      "duplicato": "C004",
+      "partita_iva": "IT01234567890"
+    }
+  ]
+}

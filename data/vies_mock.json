@@ -1,0 +1,18 @@
+{
+  "_descrizione": "Servizio VIES simulato, da usare al posto delle chiamate reali per rendere l'esercizio riproducibile. La chiave è la partita IVA in formato completo (prefisso paese + numero). Stati possibili: 'valid' = P.IVA valida e attiva; 'invalid' = P.IVA formalmente errata o inesistente; 'error' = il servizio non ha risposto (timeout / errore temporaneo); 'non_supportato' = paese fuori dall'area coperta da VIES. Una P.IVA non presente in questa mappa NON esiste come chiave: decidi tu come interpretarla.",
+  "risposte": {
+    "IT01234567890": "valid",
+    "IT09876543210": "valid",
+    "DE811234567": "error",
+    "ESB12345678": "valid",
+    "FR40303265045": "valid",
+    "IT12345678903": "valid",
+    "IT99999999999": "invalid",
+    "GB123456789": "non_supportato",
+    "IT11111111119": "valid",
+    "IT22222222227": "invalid",
+    "ESB87654321": "error",
+    "FR123": "invalid",
+    "DE256789012": "valid"
+  }
+}

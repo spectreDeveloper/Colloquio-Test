@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Cache locale tassi di cambio (rigenerabile, non fa parte della consegna)
+cache/*.json
+
+# Editor: snapshot locali (es. estensione VS Code "Local History")
+.history/

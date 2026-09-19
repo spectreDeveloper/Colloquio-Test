@@ -1,0 +1,15 @@
+id_cliente,ragione_sociale,paese,partita_iva,tasso_usd_contrattuale,note
+C001,Rossi S.r.l.,Italia,IT01234567890,,
+C002,Bianchi SpA,IT,IT09876543210,,
+C003,Müller GmbH,Deutschland,DE811234567,,
+C004,Rossi SRL,italy,IT01234567890,,cliente storico
+C005,García y Asociados SL,España,ESB12345678,,
+C006,Dupont SARL,France,FR40303265045,,
+C007,Acme Corp,USA,,0.92,contratto quadro in USD
+C008,Verdi & Co,IT,12345678903,,
+C009,Neri Trading,Italia,IT99999999999,,
+C010,Global Tech Ltd,United Kingdom,GB123456789,,
+C011,Ferrari Spa,Italia,IT11111111119,,P.IVA precedente IT22222222227 fino al 2024
+C012,Lopez SL,,ESB87654321,,
+C013,Océane Média,France,FR123,,
+C014,Schmidt AG,DE,DE256789012,0.95,contratto quadro in USD
