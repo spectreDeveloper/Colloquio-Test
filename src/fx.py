@@ -17,6 +17,8 @@ _AMOUNT_RE_US = re.compile(r"^-?\d{1,3}(,\d{3})*(\.\d+)?$")
 
 
 def parse_amount(raw: str | None) -> float | None:
+    # Converte un importo in formato europeo ("1.234,56") o anglosassone ("1500.00") in float.
+    # Ritorna None se vuoto o non riconoscibile con sicurezza (mai un tentativo "creativo").
     if not isinstance(raw, str) or not raw.strip():
         return None
     raw = raw.strip()
@@ -33,6 +35,7 @@ def parse_amount(raw: str | None) -> float | None:
 
 
 def parse_date(raw: str | None) -> str | None:
+    # Valida che la data sia in formato YYYY-MM-DD. Ritorna None se mancante o malformata.
     if not isinstance(raw, str) or not raw.strip():
         return None
     try:
@@ -43,6 +46,8 @@ def parse_date(raw: str | None) -> str | None:
 
 
 class RateCache:
+    # Cache su disco dei tassi di cambio, chiave "valuta_data" (il tasso dipende da entrambi:
+    # e' storico, cambia giorno per giorno). Garantisce idempotenza e riduce le chiamate API.
     def __init__(self, path: Path = CACHE_PATH):
         self.path = path
         try:
@@ -54,6 +59,7 @@ class RateCache:
         return self._data.get(f"{valuta}_{data}")
 
     def set(self, valuta: str, data: str, entry: dict) -> None:
+        # Scrittura atomica (file temporaneo + rename): un'interruzione a meta' non corrompe la cache.
         self._data[f"{valuta}_{data}"] = entry
         self.path.parent.mkdir(parents=True, exist_ok=True)
         tmp = self.path.with_suffix(".json.tmp")
@@ -62,6 +68,9 @@ class RateCache:
 
 
 def fetch_rate_to_eur(valuta: str, data: str, cache: RateCache) -> tuple[float | None, str | None]:
+    # Recupera (da cache o dall'API Frankfurter) il tasso BCE storico valuta->EUR per quella data.
+    # Se la data cade in un giorno non lavorativo, Frankfurter risponde con l'ultimo tasso
+    # disponibile: lo segnaliamo in una nota, senza considerarlo un errore.
     cached = cache.get(valuta, data)
     if cached is not None:
         return cached["tasso"], cached.get("nota")
@@ -90,6 +99,8 @@ def fetch_rate_to_eur(valuta: str, data: str, cache: RateCache) -> tuple[float |
 
 
 def _converti_riga(importo, valuta, data, tasso_contrattuale, cache):
+    # Le tre regole di conversione, in ordine di priorita': EUR diretto -> tasso contrattuale
+    # fisso (se USD e il cliente ne ha uno) -> tasso BCE storico via API per tutto il resto.
     if pd.isna(importo):
         return None, None, None, "importo mancante o non interpretabile"
     if pd.isna(valuta):
@@ -108,6 +119,8 @@ def _converti_riga(importo, valuta, data, tasso_contrattuale, cache):
 
 
 def converti_in_eur(fatture: pd.DataFrame, clienti: pd.DataFrame) -> pd.DataFrame:
+    # Pulisce importo/data/valuta delle fatture, poi applica _converti_riga a ognuna,
+    # aggiungendo tasso_cambio, fonte_tasso, importo_eur e nota_cambio.
     out = fatture.copy()
     out["importo"] = out["importo"].map(parse_amount)
     out["data_emissione"] = out["data_emissione"].map(parse_date)

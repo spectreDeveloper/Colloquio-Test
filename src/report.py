@@ -18,6 +18,8 @@ _ETICHETTE_IVA = {
 
 
 def _valuta_riga(row) -> tuple[bool, list[str]]:
+    # Decide se una fattura e' "affidabile" controllando in ordine: matching, esito IVA,
+    # data valida, importo EUR calcolabile, importo negativo. Ritorna (affidabile, motivi).
     motivi = []
 
     if row.metodo_match != "id":
@@ -38,7 +40,19 @@ def _valuta_riga(row) -> tuple[bool, list[str]]:
     return len(motivi) == 0, motivi
 
 
+def _segnala_note_cambio(out: pd.DataFrame) -> None:
+    # Riporta la nota di conversione (es. "tasso preso dall'ultimo giorno lavorativo") anche
+    # sulle righe gia' affidabili, come nota informativa: senza questo, l'informazione
+    # esisterebbe solo internamente e non arriverebbe mai all'amministrazione.
+    for idx, row in out.iterrows():
+        if row["affidabile"] and pd.notna(row["nota_cambio"]):
+            out.at[idx, "motivi_flag"].append(row["nota_cambio"])
+
+
 def _segnala_doppie_registrazioni(out: pd.DataFrame) -> None:
+    # Aggiunge una nota informativa alle fatture con stesso cliente/data/valuta/importo di
+    # un'altra: non le esclude ne' le marca automaticamente inaffidabili, potrebbero essere
+    # due fatture reali coincidenti - segnala solo, la decisione resta all'amministrazione.
     chiavi = ["cliente_id_risolto", "data_emissione", "valuta", "importo"]
     gruppi = out.dropna(subset=["cliente_id_risolto", "importo"]).groupby(chiavi)["id_fattura"]
     for _, id_fatture in gruppi:
@@ -53,6 +67,8 @@ def _segnala_doppie_registrazioni(out: pd.DataFrame) -> None:
 
 
 def costruisci_report(fatture: pd.DataFrame, clienti: pd.DataFrame) -> pd.DataFrame:
+    # Unisce fatture + dati cliente (nome, P.IVA, esito IVA), calcola affidabile/motivi_flag
+    # per ogni riga e aggiunge le segnalazioni di possibile doppia registrazione.
     info_cliente = clienti.set_index("id_cliente")[
         ["ragione_sociale", "partita_iva_completa", "esito_iva"]
     ]
@@ -63,6 +79,7 @@ def costruisci_report(fatture: pd.DataFrame, clienti: pd.DataFrame) -> pd.DataFr
     out["affidabile"], out["motivi_flag"] = zip(*risultati)
     out["motivi_flag"] = [list(m) for m in out["motivi_flag"]]
 
+    _segnala_note_cambio(out)
     _segnala_doppie_registrazioni(out)
     out["motivi_flag"] = out["motivi_flag"].map("; ".join)
 
@@ -70,6 +87,8 @@ def costruisci_report(fatture: pd.DataFrame, clienti: pd.DataFrame) -> pd.DataFr
 
 
 def costruisci_riepilogo(report: pd.DataFrame, duplicati_anagrafica: list[dict] | None = None) -> dict:
+    # Calcola i totali aggregati (fatture affidabili/da verificare, totale EUR, conteggi
+    # per esito IVA) da mostrare in riepilogo.json.
     affidabili = report[report["affidabile"]]
     return {
         "totale_fatture": len(report),
@@ -102,6 +121,8 @@ _COLONNE_REPORT = [
 
 
 def scrivi_output(report: pd.DataFrame, riepilogo: dict, output_dir: Path) -> None:
+    # Scrive report.csv e riepilogo.json con scrittura atomica (file temporaneo + rename),
+    # cosi' un'interruzione a meta' non corrompe mai l'output di run precedenti.
     output_dir.mkdir(parents=True, exist_ok=True)
 
     report_path = output_dir / "report.csv"

@@ -12,12 +12,15 @@ _VAT_PREFIX_EXCEPTIONS = {"EL": "GR"}  # la Grecia usa EL nei prefissi P.IVA, no
 _VALID_ISO2 = {c.alpha_2 for c in pycountry.countries}
 
 def _fold(text: str) -> str:
+    # Normalizza una stringa per confronti tolleranti: minuscolo e senza accenti (es. "España" -> "espana").
     text = text.strip().lower()
     text = unicodedata.normalize("NFKD", text)
     return "".join(c for c in text if not unicodedata.combining(c))
 
 
 def _build_lookup() -> dict[str, str]:
+    # Costruisce la mappa nome/codice -> ISO2 da babel (nomi paese in ~1100 lingue/locale)
+    # e da pycountry (codici alpha-2/alpha-3 e nomi ufficiali inglesi).
     lookup: dict[str, str] = {}
     for locale_id in localedata.locale_identifiers():
         try:
@@ -37,6 +40,8 @@ def _build_lookup() -> dict[str, str]:
 
 
 def _load_lookup() -> dict[str, str]:
+    # Legge la mappa dalla cache su disco se esiste ed e' valida; altrimenti la ricostruisce
+    # (costosa, ~1 secondo) e la salva per i run successivi, con scrittura atomica.
     if _CACHE_PATH.exists():
         try:
             return json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
@@ -52,11 +57,15 @@ def _load_lookup() -> dict[str, str]:
 _LOOKUP = _load_lookup()
 
 def normalize_country(paese: str | None) -> str | None:
+    # Converte un nome paese scritto a mano (qualsiasi lingua/formato) nel codice ISO2.
+    # Ritorna None se vuoto o non riconosciuto (mai un codice inventato).
     if not isinstance(paese, str) or not paese.strip():
         return None
     return _LOOKUP.get(_fold(paese))
 
 def country_from_vat_prefix(partita_iva: str | None) -> str | None:
+    # Ricava il paese dalle prime due lettere della P.IVA (es. "ESB87654321" -> "ES"),
+    # gestendo l'eccezione greca. Ritorna None se il prefisso non e' un codice ISO valido.
     if not isinstance(partita_iva, str):
         return None
     prefix = partita_iva.strip().upper()[:2]

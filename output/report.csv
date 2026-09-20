@@ -10,7 +10,7 @@ F0008,C999,,,nessuno,,cliente_non_identificato,2025-03-14,EUR,750.0,1.0,eur_dire
 F0009,C050,,,nessuno,,cliente_non_identificato,2025-03-15,EUR,400.0,1.0,eur_diretto,400.0,False,fattura non riconciliata con un cliente in anagrafica; impossibile validare la P.IVA: cliente non identificato
 F0010,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-03-17,EUR,1100.0,1.0,eur_diretto,1100.0,True,
 F0011,C013,C013,Océane Média,id,FR123,invalid,2025-01-01,USD,600.0,0.96256,bce,577.54,False,P.IVA non valida secondo VIES
-F0012,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-04-20,USD,1800.0,0.88028,bce,1584.5,True,
+F0012,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-04-20,USD,1800.0,0.88028,bce,1584.5,True,tasso del 2025-04-17 (ultimo giorno lavorativo BCE disponibile prima del 2025-04-20)
 F0013,C006,C006,Dupont SARL,id,FR40303265045,valid,2025-05-05,CHF,2500.0,1.0711,bce,2677.75,True,
 F0014,C014,C014,Schmidt AG,id,DE256789012,valid,2025-05-06,USD,4000.0,0.95,contrattuale,3800.0,True,
 F0015,C014,C014,Schmidt AG,id,DE256789012,valid,2025-05-07,EUR,1000.0,1.0,eur_diretto,1000.0,True,
@@ -24,6 +24,6 @@ F0022,C012,C012,Lopez SL,id,ESB87654321,error,2025-09-02,USD,2100.0,0.85866,bce,
 F0023,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-09-03,USD,1234.56,0.85815,bce,1059.44,True,
 F0024,C003,C003,Müller GmbH,id,DE811234567,error,2025-09-05,USD,,,,,False,VIES non ha risposto (errore/timeout) per questa P.IVA; importo in EUR non calcolabile: importo mancante o non interpretabile
 F0025,C003,C003,Müller GmbH,id,DE811234567,error,2025-09-05,,1400.0,,,,False,VIES non ha risposto (errore/timeout) per questa P.IVA; importo in EUR non calcolabile: valuta mancante
-F0026,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-12-25,USD,1900.0,0.84839,bce,1611.94,True,
+F0026,C005,C005,García y Asociados SL,id,ESB12345678,valid,2025-12-25,USD,1900.0,0.84839,bce,1611.94,True,tasso del 2025-12-24 (ultimo giorno lavorativo BCE disponibile prima del 2025-12-25)
 F0027,C001,C001,Rossi S.r.l.,id,IT01234567890,valid,2025-03-10,EUR,1500.0,1.0,eur_diretto,1500.0,True,possibile doppia registrazione: stesso cliente/data/valuta/importo di F0001
-F0028,C006,C006,Dupont SARL,id,FR40303265045,valid,2025-06-15,USD,2600.0,0.86866,bce,2258.52,True,
+F0028,C006,C006,Dupont SARL,id,FR40303265045,valid,2025-06-15,USD,2600.0,0.86866,bce,2258.52,True,tasso del 2025-06-13 (ultimo giorno lavorativo BCE disponibile prima del 2025-06-15)

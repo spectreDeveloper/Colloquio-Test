@@ -252,6 +252,15 @@ def test_costruisci_report_riga_affidabile():
     assert report.loc[0, "motivi_flag"] == ""
 
 
+def test_costruisci_report_nota_cambio_riportata_anche_se_affidabile():
+    fatture = pd.DataFrame(
+        [_fattura_riga(nota_cambio="tasso del 2025-06-13 (ultimo giorno lavorativo BCE disponibile prima del 2025-06-15)")]
+    )
+    report = costruisci_report(fatture, _clienti_per_report())
+    assert report.loc[0, "affidabile"]
+    assert "ultimo giorno lavorativo" in report.loc[0, "motivi_flag"]
+
+
 def test_costruisci_report_cliente_non_identificato():
     fatture = pd.DataFrame(
         [_fattura_riga(cliente_id=None, cliente_id_risolto=None, metodo_match="nessuno")]

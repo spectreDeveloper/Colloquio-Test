@@ -12,6 +12,8 @@ NON_APPLICABILE = "non_applicabile"  # cliente senza P.IVA (es. extra-UE)
 
 
 def build_full_vat(partita_iva: str | None, paese_iso: str | None) -> str | None:
+    # Se la P.IVA ha gia' il prefisso paese la lascia com'e'; se manca (es. "12345678903")
+    # lo antepone usando il paese del cliente, per poterla cercare nel mock VIES.
     vat = normalize_vat(partita_iva)
     if vat is None:
         return None
@@ -23,6 +25,8 @@ def build_full_vat(partita_iva: str | None, paese_iso: str | None) -> str | None
 
 
 def valida_partita_iva(partita_iva: str | None, paese_iso: str | None, vies_map: dict[str, str]) -> tuple[str, str | None]:
+    # Cerca la P.IVA completa nel mock VIES. Nessuna P.IVA -> non_applicabile (es. cliente
+    # extra-UE). P.IVA assente dal mock -> invalid (il vero VIES non ha uno stato "non trovato").
     vat = build_full_vat(partita_iva, paese_iso)
     if vat is None:
         return NON_APPLICABILE, None
@@ -30,6 +34,8 @@ def valida_partita_iva(partita_iva: str | None, paese_iso: str | None, vies_map:
 
 
 def valida_clienti(clienti: pd.DataFrame, vies_map: dict[str, str]) -> pd.DataFrame:
+    # Applica valida_partita_iva a ogni cliente, aggiungendo le colonne esito_iva
+    # e partita_iva_completa al DataFrame.
     out = clienti.copy()
     risultati = [
         valida_partita_iva(piva, paese_iso, vies_map)

@@ -32,19 +32,25 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=ROOT / "output")
     args = parser.parse_args()
 
+    # 1. caricamento dati grezzi
     clienti = load_clienti_raw(args.data_dir / "clienti.csv")
     fatture = load_fatture_raw(args.data_dir / "fatture.csv")
     vies_map = load_vies_mock(args.data_dir / "vies_mock.json")
 
+    # 2. normalizzazione paese (con fallback dal prefisso P.IVA se il campo paese manca)
     clienti["paese_iso"] = clienti["paese"].map(normalize_country)
     fallback = clienti["partita_iva"].map(country_from_vat_prefix)
     clienti["paese_iso"] = clienti["paese_iso"].fillna(fallback)
 
+    # 3. deduplica anagrafica + matching fattura -> cliente
     alias, duplicati = build_alias_map(clienti)
     fatture = match_fatture(fatture, alias)
+    # 4. validazione P.IVA via mock VIES
     clienti = valida_clienti(clienti, vies_map)
+    # 5. conversione in EUR
     fatture = converti_in_eur(fatture, clienti)
 
+    # 6. report finale + riepilogo, scritti su disco in modo atomico
     report = costruisci_report(fatture, clienti)
     riepilogo = costruisci_riepilogo(report, duplicati)
     scrivi_output(report, riepilogo, args.output_dir)
