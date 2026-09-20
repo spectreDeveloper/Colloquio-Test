@@ -20,11 +20,15 @@ Per quanto riguarda la duplicazione dei clienti, ho utilizzato la partita IVA pe
 
 Ho inoltre aggiunto un controllo per completare la partita IVA, quindi aggiungere il paese sfruttando la logica dello step 1 — essendo già pulito e corretto, posso sfruttarlo per validare la P.IVA.
 
+Per le P.IVA che non risultano proprio nel mock, ho deciso di trattarle come non valide invece di inventare uno stato a parte tipo "non trovata". Il vero VIES funziona così: o è valida o non lo è, non esiste un "non so risponderti". E dato che prima del controllo ho già ripulito il formato e completato il paese quando mancava, se dopo tutto questo una P.IVA ancora non combacia con niente, per me è più corretto considerarla non valida che lasciarla in un limbo.
+
 ## Cambio valuta
 
 Per il cambio valuta ho usato un'API dove necessaria, quindi per valute non EUR. Per EUR ho utilizzato un tasso standard di uno; per le altre ho utilizzato l'API di Frankfurter con la data della fattura, per avere un dato reale.
 
 C'è anche un terzo caso, con priorità sull'API: se la valuta è USD e il cliente ha un `tasso_usd_contrattuale` in anagrafica, uso quel tasso fisso, a prescindere dalla data della fattura — niente chiamata API in questo caso, perché il tasso è un accordo commerciale concordato col cliente, non un valore che dipende dal giorno.
+
+Nel dataset c'è anche una fattura in una valuta che l'API non gestisce (AED). In quel caso non invento nessun tasso: lascio l'importo in EUR vuoto e segnalo la fattura, perché un numero sbagliato in un report finanziario è peggio di un numero mancante. Stessa logica per le fatture con importo o valuta mancanti nel file originale: mi fermo subito e segnalo il motivo, invece di provare comunque a calcolare qualcosa.
 
 ## Affidabilità del report
 
